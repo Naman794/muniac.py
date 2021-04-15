@@ -110,4 +110,4 @@ async def skip(ctx):
 
 
 keep_alive()
-bot.run('NzQwOTY4NzI5MzIzNTAzNjM3.Xywu5w.E4damBT1PpKTb8ycZurbVp6YOg4')
+bot.run(Tokens)
