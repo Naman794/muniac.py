@@ -55,23 +55,31 @@ async def leave(ctx):
 
 @bot.command(aliases = ['p','Play'])
 async def play(ctx, *, name):
+    voice_state = ctx.author.voice
+
+    if voice_state is None:
+      return await ctx.send("You are not connected to any Voice Channel")
 
     player = music.get_player(guild_id=ctx.guild.id)
     if not player:
-        await ctx.author.voice.channel.connect()
-        player = music.create_player(ctx, ffmpeg_error_betterfix=True)
+          await ctx.author.voice.channel.connect()
+          player = music.create_player(ctx, ffmpeg_error_betterfix=True)
     if not ctx.voice_client.is_playing():
         
         await player.queue(name, search=True)
         song = await player.play()
-        em = discord.Embed(title = " Now Playing",
-        description = f'{song.name} played by{ctx.author.name}',color = 0x0000f)
-
-        sngg = await ctx.send(embed=em)
+        await ctx.send(f'🔍Searching for 🎵`{song.name}`')
+        sngg = await ctx.send(f"**Now Playing** {song.name}")
         await sngg.add_reaction("🎧")
     else:
         song= await player.queue(name, search=True)
         await ctx.send(f"Queued {song.name}")
+
+    if ctx.voice_client.is_playing() == False:
+        
+      await asyncio.sleep(1)
+      await ctx.voice_client.disconnect()
+      await ctx.send("**Disconnected Due to inactivity**")
 
 
 @bot.command()
