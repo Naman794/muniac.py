@@ -20,7 +20,7 @@ def get_prefix(bot, message):
     prefixes = json.load(f)
   return prefixes[str(message.guild.id)]
 
-bot = commands.Bot(command_prefix=commands.when_mentioned_or('m!'))
+bot = commands.Bot(command_prefix=commands.when_mentioned_or('//'))
 
 @bot.event
 async def on_guild_join(guild):
@@ -76,7 +76,7 @@ async def play(ctx, *, name):
 
 @bot.command()
 async def pause(ctx):
-    player = music.get_player(guild_i=ctx.guild.id)
+    player = music.get_player(guild_id=ctx.guild.id)
     song = await player.pause()
     sng = await ctx.send(f"Paused {song.name}")
     await sng.add_reaction("✋")
@@ -107,7 +107,17 @@ async def skip(ctx):
     else:
         await ctx.send(f"Skipped {data[0].name}")
 
+@bot.command()
+async def volume(ctx, vol):
+    player = music.get_player(guild_id=ctx.guild.id)
+    song, volume = await player.change_volume(float(vol) / 100) # volume should be a float between 0 to 1
+    await ctx.send(f"Changed volume for {song.name} to {volume*100}%")
 
+@bot.command()
+async def np(ctx):
+    player = music.get_player(guild_id=ctx.guild.id)
+    song = player.now_playing()
+    await ctx.send(song.name)
 
 keep_alive()
 bot.run(Tokens)
