@@ -1,0 +1,4 @@
+Discord
+DiscordUtils
+PyNaCl
+DiscordUtls[VOice]
